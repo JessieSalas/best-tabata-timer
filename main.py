@@ -2,9 +2,10 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.graphics import Color, Rectangle
 from kivy.clock import Clock
-from kivy.uix.screenmanager import ScreenManager,Screen, WipeTransition
+from kivy.uix.screenmanager import ScreenManager,Screen
 from kivy.uix.floatlayout import FloatLayout
-
+from kivy.uix.settings import SettingsWithTabbedPanel
+from settings import settings_json
 
 Builder.load_string("""
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
@@ -40,6 +41,7 @@ Builder.load_string("""
                         valign: 'middle'
                         size_hint: (1, 0.05)
                         pos_hint: {'x':0, 'y': 0}
+                        on_release: app.open_settings()
                     Button:
                         background_color: (0.058823529, 0.458823529, 0.741176471, 1)
                         background_normal: ''
@@ -53,7 +55,9 @@ Builder.load_string("""
                         size_hint: (1, 0.13)
                         pos_hint: {'x':0, 'y':0.047}
                         on_press: manager.transition = FadeTransition()
+                        on_release: print([i for i in app.countdown(app.preptime)])
                         on_release: manager.current = 'workspace'
+
 
             Screen: 
                 name: 'workspace'
@@ -80,7 +84,32 @@ class Accordion(Screen):
 
 class TestApp(App):
     def build(self):
+        self.settings_cls = SettingsWithTabbedPanel
+        self.use_kivy_settings = False
+        self.preptime = self.config.get('customize', 'preptime')
+        setting = self.config.get('customize', 'boolexample')
+        setting = self.config.get('customize', 'boolexample')
+        setting = self.config.get('customize', 'boolexample')
+        setting = self.config.get('customize', 'boolexample')
         return Beautiful()
+   
+    def countdown(self, worktime):
+        return reversed([i for i in range(0, int(worktime))]) 
+    
+    def build_config(self, config):
+        config.setdefaults('customize', {
+            'sound': True,
+            'preptime': 10,
+            'worktime': 20,
+            'resttime': 10,
+            'reps': 8,
+            'sets': 1})
+    
+    def build_settings(self, settings):
+        settings.add_json_panel('BEST Tabata \n Timer', self.config, data = settings_json)
+
+    def on_config_change(self, config, section, key, value):
+        print( "You have changed a setting, dear friend")
 
 if __name__ == '__main__':
     TestApp().run()
