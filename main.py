@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.lang import Builder
 from kivy.graphics import Color, Rectangle
 from kivy.clock import Clock
@@ -55,9 +56,9 @@ Builder.load_string("""
                         size_hint: (1, 0.13)
                         pos_hint: {'x':0, 'y':0.047}
                         on_press: manager.transition = FadeTransition()
-                        on_release: print([i for i in app.countdown(app.preptime)])
+                        on_release: root.number(5)
+                        on_release: root.poop()
                         on_release: manager.current = 'workspace'
-
 
             Screen: 
                 name: 'workspace'
@@ -77,7 +78,22 @@ Builder.load_string("""
 """)
 
 class Beautiful(FloatLayout):
-    pass
+    def poop(self):
+        print( "poop")
+    
+    def rev(self, listy):
+        return list(reversed(listy))
+    
+    def countdown(self,worktime):
+        l = Label(text= "{0}".format( self.rev(   [i for i in range(0, int(worktime))]   )   ))
+        self.add_widget(l)
+
+    def setter(self, instance, value):
+        instance.text_size = (value-20, None)
+
+    def number(self, num):
+        l = Label(text= ' [b] {0} [b] '.format(int(num)), markup = True, allow_stretch= True, font_size = '400px')
+        self.add_widget(l)
 
 class Accordion(Screen):
     pass
@@ -92,10 +108,10 @@ class TestApp(App):
         setting = self.config.get('customize', 'boolexample')
         setting = self.config.get('customize', 'boolexample')
         return Beautiful()
-   
-    def countdown(self, worktime):
-        return reversed([i for i in range(0, int(worktime))]) 
-    
+  
+    def swagg(self):
+        l = Label(text='THIS IS SWAGG')
+        add_widget(l) 
     def build_config(self, config):
         config.setdefaults('customize', {
             'sound': True,
